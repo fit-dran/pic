@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/oficina"
+        android:enabled="true"
+        android:title="@string/text_label_1"
+        android:icon="@drawable/ic_office"/>
+
+    <item
+        android:id="@+id/pdf"
+        android:enabled="true"
+        android:title="@string/text_label_2"
+        android:icon="@drawable/ic_item"
+        />
+    <item
+        android:id="@+id/send"
+        android:enabled="true"
+        android:title="@string/text_label_3"
+        android:icon="@drawable/ic_send"/>
+</menu>
