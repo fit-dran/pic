@@ -55,12 +55,17 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
 
-
-
-
-
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Database db = new Database(this);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        ArrayList<Room> rooms = db.getRooms();
+        RoomListAdapter adapter = new RoomListAdapter(this, rooms);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
 }

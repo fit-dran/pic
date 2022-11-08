@@ -2,30 +2,40 @@ package com.example.pic.models;
 
 //Modelo de datos para el item de la lista
 public class Item {
-    private String description;
-    private String code;
+    private int id;
+    private String name;
+    private String Barcode;
 
     public Item() {
     }
 
-    public Item(String description, String code) {
-        this.description = description;
-        this.code = code;
+    public Item(int id, String name, String barcode) {
+        this.id = id;
+        this.name = name;
+        Barcode = barcode;
     }
 
-    public String getDescription() {
-        return description;
+    public int getId() {
+        return id;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getCode() {
-        return code;
+    public String getName() {
+        return name;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getBarcode() {
+        return Barcode;
+    }
+
+    public void setBarcode(String barcode) {
+        Barcode = barcode;
     }
 }

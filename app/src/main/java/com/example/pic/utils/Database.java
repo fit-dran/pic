@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
+import com.example.pic.models.Item;
 import com.example.pic.models.Room;
 import com.example.pic.models.Room;
 
@@ -14,17 +15,17 @@ public class Database extends SQLiteOpenHelper {
 
     // Si cambias la base de datos, debes incrementar la versión
     private static final String DATABASE_NAME = "default.db";
-    private static final int DATABASE_VERSION = 1;
-
+    private static final int DATABASE_VERSION = 2;
 
 
     //Clase helper para crear base de datos interna para guardar oficinas y items
-    public static class EntryHelper implements BaseColumns{
+    public static class EntryHelper implements BaseColumns {
         public static final String TABLE_NAME_OFFICE = "Office";
         public static final String TABLE_NAME_ACTIVE = "Active";
         public static final String COLUMN_NAME_NAME = "Name";
         public static final String COLUMN_NAME_DESCRIPTION = "Description";
         public static final String COLUMN_NAME_BARCODE = "Barcode";
+        public static final String COLUMN_NAME_ROOM_ID = "RoomId";
 
         private static final String SQL_CREATE_OFFICE =
                 "CREATE TABLE " + EntryHelper.TABLE_NAME_OFFICE + " (" +
@@ -36,7 +37,10 @@ public class Database extends SQLiteOpenHelper {
                 "CREATE TABLE " + EntryHelper.TABLE_NAME_ACTIVE + " (" +
                         EntryHelper._ID + " INTEGER PRIMARY KEY," +
                         EntryHelper.COLUMN_NAME_NAME + " TEXT," +
-                        EntryHelper.COLUMN_NAME_BARCODE + " TEXT)";
+                        EntryHelper.COLUMN_NAME_BARCODE + " TEXT," +
+                        EntryHelper.COLUMN_NAME_ROOM_ID + " INTEGER," +
+                        "FOREIGN KEY (" + EntryHelper.COLUMN_NAME_ROOM_ID + ") REFERENCES " + EntryHelper.TABLE_NAME_OFFICE + "(" + EntryHelper._ID + "))";
+
 
         private static final String SQL_DELETE_ENTRIES_OFFICE =
                 "DROP TABLE IF EXISTS " + EntryHelper.TABLE_NAME_OFFICE;
@@ -105,4 +109,98 @@ public class Database extends SQLiteOpenHelper {
         cursor.close();
         return rooms;
     }
+
+    public void deleteRoom(int id) {
+
+        android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
+        String selection = EntryHelper._ID + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(id)};
+        db.delete(EntryHelper.TABLE_NAME_OFFICE, selection, selectionArgs);
+
+    }
+
+    public Room getRoom(int roomId) {
+        Room room = new Room();
+        android.database.sqlite.SQLiteDatabase db = this.getReadableDatabase();
+        String[] projection = {
+                EntryHelper._ID,
+                EntryHelper.COLUMN_NAME_NAME,
+                EntryHelper.COLUMN_NAME_BARCODE,
+                EntryHelper.COLUMN_NAME_DESCRIPTION
+        };
+        String selection = EntryHelper._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(roomId)};
+        android.database.Cursor cursor = db.query(
+                EntryHelper.TABLE_NAME_OFFICE,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+        while (cursor.moveToNext()) {
+            room.setId(cursor.getInt(cursor.getColumnIndexOrThrow(EntryHelper._ID)));
+            room.setName(cursor.getString(cursor.getColumnIndexOrThrow(EntryHelper.COLUMN_NAME_NAME)));
+            room.setBarcode(cursor.getString(cursor.getColumnIndexOrThrow(EntryHelper.COLUMN_NAME_BARCODE)));
+            room.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(EntryHelper.COLUMN_NAME_DESCRIPTION)));
+        }
+        cursor.close();
+        return room;
+    }
+
+    public void updateItem(int itemId, String toString, String toString1) {
+        android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(EntryHelper.COLUMN_NAME_NAME, toString);
+        values.put(EntryHelper.COLUMN_NAME_BARCODE, toString1);
+        String selection = EntryHelper._ID + " LIKE ?";
+        String[] selectionArgs = {String.valueOf(itemId)};
+        db.update(EntryHelper.TABLE_NAME_OFFICE, values, selection, selectionArgs);
+    }
+
+    public void addItem(String toString, String toString1, int roomId) {
+        android.database.sqlite.SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(EntryHelper.COLUMN_NAME_NAME, toString);
+        values.put(EntryHelper.COLUMN_NAME_BARCODE, toString1);
+        values.put(EntryHelper.COLUMN_NAME_ROOM_ID, roomId);
+        db.insert(EntryHelper.TABLE_NAME_ACTIVE, null, values);
+        db.close();
+
+    }
+
+    public ArrayList<Item> getRoomItems(int roomId) {
+        ArrayList<Item> items = new ArrayList<>();
+        android.database.sqlite.SQLiteDatabase db = this.getReadableDatabase();
+        String[] projection = {
+                EntryHelper._ID,
+                EntryHelper.COLUMN_NAME_NAME,
+                EntryHelper.COLUMN_NAME_BARCODE
+        };
+        String selection = EntryHelper.COLUMN_NAME_ROOM_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(roomId)};
+        String sortOrder = EntryHelper.COLUMN_NAME_NAME + " DESC";
+        android.database.Cursor cursor = db.query(
+                EntryHelper.TABLE_NAME_ACTIVE,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+        while (cursor.moveToNext()) {
+            Item item = new Item();
+            item.setId(cursor.getInt(cursor.getColumnIndexOrThrow(EntryHelper._ID)));
+            item.setName(cursor.getString(cursor.getColumnIndexOrThrow(EntryHelper.COLUMN_NAME_NAME)));
+            item.setBarcode(cursor.getString(cursor.getColumnIndexOrThrow(EntryHelper.COLUMN_NAME_BARCODE)));
+            items.add(item);
+        }
+        cursor.close();
+        return items;
+
+    }
+
+
 }
