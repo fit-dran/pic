@@ -2,6 +2,7 @@ package com.example.pic.activities;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -34,7 +35,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     FloatingActionButton floatingActionButton;
-    RecyclerView recyclerView;
 
 
     @Override
@@ -42,10 +42,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Database db = new Database(this);
-        recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
         ArrayList<Room> rooms = db.getRooms();
         RoomListAdapter adapter = new RoomListAdapter(this, rooms);
         recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
         floatingActionButton = findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -156,7 +156,6 @@ public class AddRoomActivity extends AppCompatActivity {
         ScanOptions options = new ScanOptions();
         options.setDesiredBarcodeFormats(ScanOptions.ONE_D_CODE_TYPES);
         options.setPrompt("Escanea el código de la habitacion");
-        options.setCaptureActivity(AnyOrientationCaptureActivity.class);
         options.setOrientationLocked(true);
         options.setBeepEnabled(false);
         barcodeLauncher.launch(options);

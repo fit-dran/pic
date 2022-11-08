@@ -38,7 +38,6 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomVi
     public void onBindViewHolder(RoomViewHolder holder, int position) {
         holder.tvRoomName.setText(rooms.get(position).getName());
         holder.tvRoomDescription.setText(rooms.get(position).getDescription());
-        holder.ivRoomBarcodeImage.setImageBitmap(rooms.get(position).getBarcodeImage());
     }
 
     @Override
@@ -47,14 +46,13 @@ public class RoomListAdapter extends RecyclerView.Adapter<RoomListAdapter.RoomVi
     }
 
 
-    public class RoomViewHolder extends RecyclerView.ViewHolder {
+    public static class RoomViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivRoomBarcodeImage;
         TextView tvRoomName, tvRoomDescription;
 
         public RoomViewHolder(View itemView) {
             super(itemView);
-            ivRoomBarcodeImage = itemView.findViewById(R.id.ivRoomBarcodeImage);
             tvRoomName = itemView.findViewById(R.id.tvRoomName);
             tvRoomDescription = itemView.findViewById(R.id.tvRoomDescription);
         }
